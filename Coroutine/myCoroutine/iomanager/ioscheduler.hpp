@@ -62,7 +62,7 @@ namespace myCoroutine
         bool cancelEvent(int fd, Event event);
         // delete all events and trigger its callback
         bool cancelAll(int fd);
-
+        //get current IOManager
         static IOManager *getThis();
 
     protected:
