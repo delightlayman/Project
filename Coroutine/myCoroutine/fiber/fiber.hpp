@@ -43,7 +43,7 @@ namespace myCoroutine
         Fiber();
 
     public:
-        static constexpr uint32_t STACKSIZE = 4096 * 8;
+        static constexpr uint32_t STACKSIZE = 4096 * 32;
         // 构造子协程
         Fiber(const func &cb, const uint32_t stacksize = STACKSIZE, bool inscheduler = true);
         ~Fiber();

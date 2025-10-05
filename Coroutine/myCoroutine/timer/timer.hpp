@@ -49,9 +49,9 @@ namespace myCoroutine
     private:
         // 是否循环使用
         bool _recurring = false;
-        // 超时时间间隔---执行时间
+        // 超时时间间隔
         uint64_t _ms = 0;
-        // 绝对超时时间---终止时间
+        // 绝对超时时间
         time_point<system_clock> _next;
         // 超时时触发的回调函数
         func _cb;

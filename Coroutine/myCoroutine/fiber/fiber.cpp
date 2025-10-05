@@ -25,7 +25,6 @@ namespace myCoroutine
             t_scheduler_fiber = main_fiber.get(); // 主线程默认为调度线程
             t_fiber = main_fiber.get();           // 主协程设置为运行中协程
         }
-
         return t_fiber->shared_from_this();
     }
     // 设置---当前线程---运行中的协程
@@ -111,7 +110,6 @@ namespace myCoroutine
         // 回调函数执行完毕，置空回调函数+设置状态为终止
         cur->_cb = nullptr;
         cur->_state = Term;
-
         // 终止当前协程，执行权交回给调度器或主协程
         // yield切换上下文后，后续函数无法执行，故须先释放cur（引用计数-1+置空）
         // 注意：引用计数-1，局部指针cur置空，原指针仍有效

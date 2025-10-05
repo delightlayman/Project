@@ -13,7 +13,7 @@ namespace myCoroutine
     class IOManager : public Scheduler, public TimerManager
     {
     public:
-        //IO事件---三大类：读、写、无
+        // IO事件---三大类：读、写、无
         enum Event
         {
             NONE = 0x0,
@@ -35,6 +35,7 @@ namespace myCoroutine
                 // callback function
                 function<void()> cb;
             };
+            // file descriptor 
             int fd = 0;
             // read event context
             EventContext read;
@@ -43,8 +44,8 @@ namespace myCoroutine
             // events registered
             Event events = NONE;
             // event mutex
-            mutex mutex;
-            
+            mutex _mutex;
+
             EventContext &getEventContext(Event event);
             void resetEventContext(EventContext &ctx);
             void triggerEvent(Event event);
@@ -62,28 +63,32 @@ namespace myCoroutine
         bool cancelEvent(int fd, Event event);
         // delete all events and trigger its callback
         bool cancelAll(int fd);
-        //get current IOManager
+        // get current IOManager
         static IOManager *getThis();
 
     protected:
-        //notify the IOManager that there are new tasks to be scheduled
+        // notify the IOManager that there are new tasks to be scheduled
         void tickle() override;
-        //whether the IOManager could be stopped
+        // whether the IOManager could be stopped
         bool stopping() override;
-        //collect all triggered fd callback and set to IOManager
+        // collect all triggered fd callback and set to IOManager
         void idle() override;
-        //timer func override
+        // when timer insert at front, update epoll_wait time and wake up idle coroutine
         void onTimerInsertedAtFront() override;
-        //resize the fdContexts vector
+        // resize the IOManager fdContexts vector
         void contextResize(size_t size);
 
     private:
+        // epoll fd
         int _epfd = 0;
-        // fd[0] read，fd[1] write
+        // pipe fd[0] read，fd[1] write
         int _tickleFds[2];
+        // counts for events pended to be processed
         atomic<size_t> _pendingEventCount = {0};
+        // IOManager lock
         shared_mutex _mutex;
-        // store fdcontexts for each fd
+        // store fdcontexts for each fd---fdContext pool
+        // fd == index
         vector<FdContext *> _fdContexts;
     };
 

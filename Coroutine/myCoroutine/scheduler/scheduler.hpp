@@ -70,7 +70,7 @@ namespace myCoroutine
         virtual void tickle();   // 唤醒线程---当前无实际作用，后续重载
         virtual void run();      // 线程函数---回调函数
         virtual void idle();     // 空闲协程函数
-        virtual bool stopping(); // 是否可以关闭
+        virtual bool stopping(); // 是否已关闭
 
         // 是否有空闲线程
         bool hasIdleThreads() { return _idleThreadCount > 0; }
@@ -113,7 +113,10 @@ namespace myCoroutine
                 cb.swap(*f);
                 thread = thr;
             }
-
+            // shared_ptr<A> a = make_shared<A>();
+            //赋值场景	     调用函数	                    语义	                引用计数变化
+            // a = b;	    赋值运算符（const shared_ptr&）	共享 b 持有的资源所有权  引用计数加 1
+            // a = nullptr;	空指针赋值运算符（nullptr_t）	放弃 a 持有的资源所有权	  减 1（若有资源）
             void reset()
             {
                 fiber = nullptr;
@@ -135,9 +138,9 @@ namespace myCoroutine
         // 主线程是否使用调度协程
         // 是则：主线程添加任务，调度协程管理各从线程，各从线程安排协程完成任务
         // 否则：主线程只负责添加任务，各从线程各自安排协程完成任务
-        bool _usecaller;                    
-        shared_ptr<Fiber> _schedulerFiber; // 需创建的调度协程，
-        int _rootThread = -1;              // 记录主线程的线程id
+        bool _usecaller;
+        shared_ptr<Fiber> _schedulerFiber = nullptr; // 需创建的调度协程，
+        int _rootThread = -1;                        // 记录主线程的线程id
 
         bool _stopping = false; // 是否正在关闭（其他资源可能未处理）
     };

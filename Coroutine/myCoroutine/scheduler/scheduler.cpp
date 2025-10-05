@@ -37,7 +37,7 @@ namespace myCoroutine
             // 创建调度协程--- 无调用栈 且 调度协程退出后将返回主协程
             // 注意：绑定了this---调度器对象
             // 主线程回调函数交给协程运行
-            _schedulerFiber.reset(new Fiber(bind(&Scheduler::run, this), 0, false));
+            _schedulerFiber.reset(new Fiber(bind(&Scheduler::run, this), Fiber::STACKSIZE, false));
             Fiber::setSchedulerFiber(_schedulerFiber.get());
             _rootThread = Thread::getSysTid();
 
@@ -151,10 +151,13 @@ namespace myCoroutine
                     if (task.fiber->getstate() != Fiber::Term)
                     {
                         task.fiber->resume();
+                        cout << "----1" << endl;
                     }
                 }
+                cout << "----2" << endl;
                 _activeThreadCount--;
                 task.reset();
+                cout << "----3" << endl;
             }
             else if (task.cb)
             {
@@ -176,9 +179,9 @@ namespace myCoroutine
                         cout << "Schedule::run() ends in thread: " << cur_stid << endl;
                     break;
                 }
-                _idleThreadCount++;
+                _idleThreadCount++;//空闲线程数+1
                 idle_fiber->resume();
-                _idleThreadCount--;
+                _idleThreadCount--;//空闲线程数-1
             }
         }
     }
@@ -217,7 +220,7 @@ namespace myCoroutine
 
         if (_schedulerFiber)
         {
-            //启动调度协程处理任务
+            // 启动调度协程处理任务
             _schedulerFiber->resume();
             if (debug)
                 cout << "_schedulerFiber ends in thread:" << Thread::getSysTid() << endl;
