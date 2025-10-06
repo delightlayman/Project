@@ -4,8 +4,8 @@ static bool debug = true; // 是否打印调试信息
 
 namespace myCoroutine
 {
-    //同一线程，同一时刻，有且只有一个协程在运行（占有cpu）
-    // 当前线程的协程信息
+    // 同一线程，同一时刻，有且只有一个协程在运行（占有cpu）
+    //  当前线程的协程信息
     static thread_local shared_ptr<Fiber> t_thread_fiber = nullptr; // 主协程
     static thread_local Fiber *t_scheduler_fiber = nullptr;         // 调度协程
     static thread_local Fiber *t_fiber = nullptr;                   // 运行中的协程
@@ -102,19 +102,34 @@ namespace myCoroutine
     // 子协程入口函数
     void Fiber::mainFunc()
     {
-        // 获取运行中协程
-        shared_ptr<Fiber> cur = getThis();
-        assert(cur != nullptr);
+
+        // // 获取运行中协程
+        // shared_ptr<Fiber> cur = getThis();
+        // assert(cur != nullptr);
+        // // yield切换上下文后，后续函数无法执行，故须先释放cur（引用计数-1+置空）
+        // // 注意：引用计数-1，局部指针cur置空，原指针仍有效
+        // // 在_cb执行前先释放cur，防止_cb中执行yield导致cur引用计数未-1
+        // auto raw_ptr = cur.get();
+        // cur.reset(); // 引用计数-1，并置空cur
+        // // 调用回调函数
+        // raw_ptr->_cb();
+        // // 回调函数执行完毕，置空回调函数+设置状态为终止
+        // raw_ptr->_cb = nullptr;
+        // raw_ptr->_state = Term;
+
+        // // 终止当前协程，执行权交回给调度器或主协程
+        // raw_ptr->yield();
+
+        auto raw_ptr=getThis().get();
+        // 运行中协程非空
+        assert(raw_ptr);
         // 调用回调函数
-        cur->_cb();
+        raw_ptr->_cb();
         // 回调函数执行完毕，置空回调函数+设置状态为终止
-        cur->_cb = nullptr;
-        cur->_state = Term;
+        raw_ptr->_cb = nullptr;
+        raw_ptr->_state = Term;
+
         // 终止当前协程，执行权交回给调度器或主协程
-        // yield切换上下文后，后续函数无法执行，故须先释放cur（引用计数-1+置空）
-        // 注意：引用计数-1，局部指针cur置空，原指针仍有效
-        auto raw_ptr = cur.get();
-        cur.reset(); // 引用计数-1，并置空cur
         raw_ptr->yield();
     }
     // 重置协程---Term状态子协程 状态重置Ready，重置回调函数，重置上下文，复用栈空间

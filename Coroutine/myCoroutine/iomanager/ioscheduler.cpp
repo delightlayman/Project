@@ -39,6 +39,7 @@ namespace myCoroutine
         ctx.cb = nullptr;
     }
 
+    // 注意：事件和任务都是对bc，fiber的封装，事件触发后，会以任务的形式被调度器执行
     // 触发事件：将事件上下文中的回调函数、协程加入调度器任务队列
     // 事件出发后，该事件会从fdContext中删除
     void IOManager::FdContext::triggerEvent(Event event)
@@ -238,7 +239,7 @@ namespace myCoroutine
         fd_ctx->resetEventContext(event_ctx);
         return true;
     }
-
+    //取消fd上的指定事件
     bool IOManager::cancelEvent(int fd, Event event)
     {
         // attemp to find FdContext
@@ -284,7 +285,7 @@ namespace myCoroutine
         fd_ctx->triggerEvent(event);
         return true;
     }
-
+    // 取消fd上的所有事件
     bool IOManager::cancelAll(int fd)
     {
         // attemp to find FdContext
