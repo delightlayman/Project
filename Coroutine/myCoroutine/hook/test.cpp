@@ -123,6 +123,7 @@ void test_iomanager()
     }
 
     printf("epoll echo server listening for connections on port: %d\n", portno);
+    // 设置为非阻塞模式
     fcntl(sock_listen_fd, F_SETFL, O_NONBLOCK);
     myCoroutine::IOManager iom(9);
     iom.addEvent(sock_listen_fd, myCoroutine::IOManager::READ, test_accept);
