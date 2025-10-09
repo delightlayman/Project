@@ -1,0 +1,38 @@
+[info] : 2025-10-09 10:30:02.014083 : timer tick
+[info] : 2025-10-09 10:30:07.014734 : timer tick
+[info] : 2025-10-09 10:30:12.015152 : timer tick
+[info] : 2025-10-09 10:30:16.041926 : deal with the client(192.168.157.1)
+[info] : 2025-10-09 10:30:16.042052 : adjust timer once
+[info] : 2025-10-09 10:30:16.042129 : GET / HTTP/1.1
+[info] : 2025-10-09 10:30:16.042163 : Host: 192.168.157.10:9006
+[info] : 2025-10-09 10:30:16.042168 : Connection: keep-alive
+[info] : 2025-10-09 10:30:16.042172 : DNT: 1
+[info] : 2025-10-09 10:30:16.042175 : oop!unknow header: DNT: 1
+[info] : 2025-10-09 10:30:16.042178 : Upgrade-Insecure-Requests: 1
+[info] : 2025-10-09 10:30:16.042181 : oop!unknow header: Upgrade-Insecure-Requests: 1
+[info] : 2025-10-09 10:30:16.042184 : User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0
+[info] : 2025-10-09 10:30:16.042187 : oop!unknow header: User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0
+[info] : 2025-10-09 10:30:16.042190 : Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+[info] : 2025-10-09 10:30:16.042193 : oop!unknow header: Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+[info] : 2025-10-09 10:30:16.042196 : Accept-Encoding: gzip, deflate
+[info] : 2025-10-09 10:30:16.042198 : oop!unknow header: Accept-Encoding: gzip, deflate
+[info] : 2025-10-09 10:30:16.042216 : Accept-Language: zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,en-GB;q=0.6
+[info] : 2025-10-09 10:30:16.042221 : oop!unknow header: Accept-Language: zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,en-GB;q=0.6
+[info] : 2025-10-09 10:30:16.042226 : 
+[info] : 2025-10-09 10:30:16.042257 : request:HTTP/1.1 200 OK
+
+[info] : 2025-10-09 10:30:16.042261 : request:HTTP/1.1 200 OK
+Content-Length:586
+
+[info] : 2025-10-09 10:30:16.042264 : request:HTTP/1.1 200 OK
+Content-Length:586
+Connection:keep-alive
+
+[info] : 2025-10-09 10:30:16.042267 : request:HTTP/1.1 200 OK
+Content-Length:586
+Connection:keep-alive
+
+
+[info] : 2025-10-09 10:30:16.042383 : send data to the client(192.168.157.1)
+[info] : 2025-10-09 10:30:16.042405 : adjust timer once
+[info] : 2025-10-09 10:30:17.015492 : timer tick

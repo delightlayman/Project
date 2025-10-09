@@ -10,21 +10,29 @@
 #include <arpa/inet.h>
 #include <assert.h>
 #include <sys/stat.h>
-#include <string.h>
 #include <pthread.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <sys/mman.h>
-#include <stdarg.h>
 #include <errno.h>
 #include <sys/wait.h>
 #include <sys/uio.h>
+
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <cstdarg>
+
 #include <map>
+#include <string>
+#include <utility>
 
 #include "../lock/locker.h"
 #include "../CGImysql/sql_connection_pool.h"
 #include "../timer/lst_timer.h"
 #include "../log/log.h"
+
+using std::map;
+using std::pair;
+using std::string;
 
 class http_conn
 {
@@ -86,7 +94,6 @@ public:
     int timer_flag;
     int improv;
 
-
 private:
     void init();
     HTTP_CODE process_read();
@@ -111,7 +118,7 @@ public:
     static int m_epollfd;
     static int m_user_count;
     MYSQL *mysql;
-    int m_state;  //读为0, 写为1
+    int m_state; // 读为0, 写为1
 
 private:
     int m_sockfd;
@@ -134,8 +141,8 @@ private:
     struct stat m_file_stat;
     struct iovec m_iv[2];
     int m_iv_count;
-    int cgi;        //是否启用的POST
-    char *m_string; //存储请求头数据
+    int cgi;        // 是否启用的POST
+    char *m_string; // 存储请求头数据
     int bytes_to_send;
     int bytes_have_send;
     char *doc_root;

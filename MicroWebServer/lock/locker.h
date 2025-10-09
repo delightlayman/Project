@@ -5,11 +5,19 @@
 #include <pthread.h>
 #include <semaphore.h>
 
+// 传统POSIX返值：0表示成功，-1表示失败并设置全局errno错误码
+// 传统POSIX返值：0表示成功，非0表示失败且数值上==errno
+
+// 信号量封装
 class sem
 {
 public:
     sem()
     {
+        // sem_init(sem_t *sem, int pshared, unsigned int value)
+        // sem: 信号量
+        // pshared: 0表示线程间共享，非0表示进程间共享
+        // value: 信号量初始值
         if (sem_init(&m_sem, 0, 0) != 0)
         {
             throw std::exception();
@@ -38,6 +46,7 @@ public:
 private:
     sem_t m_sem;
 };
+// 互斥量封装
 class locker
 {
 public:
@@ -68,6 +77,7 @@ public:
 private:
     pthread_mutex_t m_mutex;
 };
+// 条件变量封装
 class cond
 {
 public:
@@ -75,7 +85,6 @@ public:
     {
         if (pthread_cond_init(&m_cond, NULL) != 0)
         {
-            //pthread_mutex_destroy(&m_mutex);
             throw std::exception();
         }
     }
@@ -85,19 +94,14 @@ public:
     }
     bool wait(pthread_mutex_t *m_mutex)
     {
-        int ret = 0;
-        //pthread_mutex_lock(&m_mutex);
-        ret = pthread_cond_wait(&m_cond, m_mutex);
-        //pthread_mutex_unlock(&m_mutex);
-        return ret == 0;
+        // pthread_cond_wait()等待失败，返回非0错误码
+        return pthread_cond_wait(&m_cond, m_mutex) == 0;
     }
+    // timeval:秒+微秒 timespec:秒+纳秒
     bool timewait(pthread_mutex_t *m_mutex, struct timespec t)
     {
-        int ret = 0;
-        //pthread_mutex_lock(&m_mutex);
-        ret = pthread_cond_timedwait(&m_cond, m_mutex, &t);
-        //pthread_mutex_unlock(&m_mutex);
-        return ret == 0;
+        // pthread_cond_timewait()等待失败，返回非0错误码,超时返回ETIMEOUT
+        return pthread_cond_timedwait(&m_cond, m_mutex, &t) == 0;
     }
     bool signal()
     {
@@ -109,7 +113,6 @@ public:
     }
 
 private:
-    //static pthread_mutex_t m_mutex;
     pthread_cond_t m_cond;
 };
 #endif

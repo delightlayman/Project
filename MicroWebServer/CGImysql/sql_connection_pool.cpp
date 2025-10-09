@@ -1,14 +1,4 @@
-#include <mysql/mysql.h>
-#include <stdio.h>
-#include <string>
-#include <string.h>
-#include <stdlib.h>
-#include <list>
-#include <pthread.h>
-#include <iostream>
 #include "sql_connection_pool.h"
-
-using namespace std;
 
 connection_pool::connection_pool()
 {
