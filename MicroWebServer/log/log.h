@@ -1,5 +1,5 @@
-#ifndef _LOG_H
-#define _LOG_H
+#ifndef _LOG_H_
+#define _LOG_H_
 
 #include <iostream>
 #include <string>
@@ -35,7 +35,7 @@ public:
         return NULL;
     }
     // 参数:日志文件、日志状态、日志缓冲区大小、日志最大行数、最长日志条队列
-    bool init(const char *file_name, int close_log, int log_buf_size = 8192, int split_lines = 5000000, int max_queue_size = 0);
+    bool init(const char *file_name, int close_log = 0, int log_buf_size = 8192, int split_lines = 5000000, int max_queue_size = 0);
 
     void write_log(int level, const char *format, ...);
 

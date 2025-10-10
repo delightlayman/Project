@@ -1,5 +1,5 @@
-#ifndef LOCKER_H
-#define LOCKER_H
+#ifndef _LOCKER_H_
+#define _LOCKER_H_
 
 #include <exception>
 #include <pthread.h>

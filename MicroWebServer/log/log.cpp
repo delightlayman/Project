@@ -1,5 +1,5 @@
-#include <time.h>
 #include <sys/time.h>
+#include <ctime>
 #include <cstring>
 #include <cstdarg>
 #include "log.h"

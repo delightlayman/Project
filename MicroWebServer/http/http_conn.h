@@ -1,5 +1,5 @@
-#ifndef HTTPCONNECTION_H
-#define HTTPCONNECTION_H
+#ifndef _HTTPCONNECTION_H_
+#define _HTTPCONNECTION_H_
 #include <unistd.h>
 #include <signal.h>
 #include <sys/types.h>
@@ -26,7 +26,7 @@
 #include <utility>
 
 #include "../lock/locker.h"
-#include "../CGImysql/sql_connection_pool.h"
+#include "../connpool/connectionpool.h"
 #include "../timer/lst_timer.h"
 #include "../log/log.h"
 

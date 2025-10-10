@@ -3,8 +3,8 @@
  *线程安全，每个操作前都要先加互斥锁，操作完后，再解锁
  **************************************************************/
 
-#ifndef _BLOCK_QUEUE_H
-#define _BLOCK_QUEUE_H
+#ifndef _BLOCK_QUEUE_H_
+#define _BLOCK_QUEUE_H_
 
 #include <iostream>
 #include <cstdlib>
