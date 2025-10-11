@@ -209,6 +209,7 @@ void Utils::addsig(int sig, void(handler)(int), bool restart)
 void Utils::timer_handler()
 {
     m_timer_lst.tick();
+    // 设置定时器
     alarm(m_TIMESLOT);
 }
 
