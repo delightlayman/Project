@@ -59,7 +59,7 @@ public:
         PATH
     };
 
-    // 主状态机状态
+    // 主状态机状态---标识报文解析位置
     enum CHECK_STATE
     {
         CHECK_STATE_REQUESTLINE = 0,
@@ -70,21 +70,28 @@ public:
     // 报文解析结果
     enum HTTP_CODE
     {
+        // 请求不完整，需要继续读取请求报文数据
         NO_REQUEST,
+        // 获得了完整的HTTP请求
         GET_REQUEST,
+        // HTTP请求报文有语法错误
         BAD_REQUEST,
         NO_RESOURCE,
         FORBIDDEN_REQUEST,
         FILE_REQUEST,
+        // 服务器内部错误，主状态机逻辑switch的default情况
         INTERNAL_ERROR,
         CLOSED_CONNECTION
     };
-    
-    // 从状态机状态
+
+    // 从状态机状态---解析一行的读取状态
     enum LINE_STATUS
     {
+        // 读取行完整
         LINE_OK = 0,
+        // 报文语法错误
         LINE_BAD,
+        // 读取行未完整
         LINE_OPEN
     };
 
@@ -93,8 +100,10 @@ public:
     ~http_conn() {}
 
 public:
-    void init(int sockfd, const sockaddr_in &addr, char *, int, int, string user, string passwd, string sqlname);
+    void init(int sockfd, const sockaddr_in &addr, char *root, int TRIGMode,
+              int close_log, string user, string passwd, string sqlname);
     void close_conn(bool real_close = true);
+    // 处理任务或请求
     void process();
     // 读取客服端发来的全部数据
     bool read_once();
@@ -153,9 +162,9 @@ private:
 
     // 存储读取的请求报文数据
     char m_read_buf[READ_BUFFER_SIZE];
-    // 缓冲区中m_read_buf中数据的最后一个字节的下一个位置
+    // m_read_buf现有数据长度
     long m_read_idx;
-    // m_read_buf读取的位置m_checked_idx
+    // m_read_buf当前读取的位置
     long m_checked_idx;
     // m_read_buf中已经解析的字符个数
     int m_start_line;
@@ -173,18 +182,17 @@ private:
     // 以下为解析请求报文中对应的6个变量
     // 存储读取文件的名称
     char m_real_file[FILENAME_LEN];
-    char *m_url;
+    char *m_url; //仅标识资源路径，而非完整的url格式
     char *m_version;
     char *m_host;
     long m_content_length;
-    bool m_linger;
+    bool m_linger; // 是否保持连接 linger:留存
 
     // 读取服务器上的文件地址
     char *m_file_address;
     struct stat m_file_stat;
     // io向量机制iovec
     struct iovec m_iv[2];
-
     int m_iv_count;
     // 是否启用的POST
     int cgi;
@@ -196,9 +204,10 @@ private:
     int bytes_have_send;
 
     char *doc_root;
-
-    map<string, string> m_users;
+    
+    // 是否启用ET模式
     int m_TRIGMode;
+    // 是否关闭日志
     int m_close_log;
 
     char sql_user[100];
