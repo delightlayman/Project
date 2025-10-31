@@ -185,7 +185,7 @@ void Utils::sig_handler(int sig)
     // 可重入性表示中断后再次进入该函数，环境变量与之前相同，不会丢失数据
     int save_errno = errno;
     int msg = sig;
-    // 将信号值从管道写端写入，传输字符类型，而非整型
+    // 将信号值从管道写端写入，传输字符类型，而非整型---对应recv在webserver
     send(u_pipefd[1], (char *)&msg, 1, 0);
     // 将原来的errno赋值为当前的errno
     errno = save_errno;
@@ -223,6 +223,7 @@ int *Utils::u_pipefd = 0;
 int Utils::u_epollfd = 0;
 
 class Utils;
+// 定时器回调函数，删除非活动连接
 void cb_func(client_data *user_data)
 {
     assert(user_data);

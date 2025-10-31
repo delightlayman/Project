@@ -78,6 +78,7 @@
         "executor": "cpp",
         "io_context": "cpp",
         "netfwd": "cpp",
-        "timer": "cpp"
+        "timer": "cpp",
+        "auth.h": "c"
     }
 }

@@ -84,8 +84,9 @@ HTTP 报文是客户端（如浏览器）与服务器间基于 HTTP 协议传输
 [空行]      # 强制存在，标志首部结束、消息体开始
 [消息体]    # 可选，实际传输的数据（如表单、HTML、JSON）
 ```
-HTTP/1.1 规范强制要求：所有 “行级分割” 必须用 \r\n 作为分隔符
-空行：仅包含 \r\n
+**HTTP/1.1 规范强制要求：所有 “行级分割” 必须用 \r\n 作为分隔符**
+**空行：仅包含 \r\n**
+**HTTP 协议通过 “Content-Length 字段” 或 “分块传输标识” 确定消息体边界，无需依赖 \r\n 判断结束**
 
 ### 二、请求报文解析（客户端→服务器）
 请求报文的作用是 “告诉服务器：要操作的资源、操作方式，以及附加需求”，核心在于请求行和请求相关首部。
@@ -104,6 +105,7 @@ HTTP/1.1 规范强制要求：所有 “行级分割” 必须用 \r\n 作为分
 - HTTP 版本：声明使用的协议版本，主流为 HTTP/1.1，HTTP/2、HTTP/3 因效率更高逐步普及。
 - 请求行示例：GET /index.html HTTP/1.1、POST /api/login HTTP/1.1。
 #### 2. 请求首部字段
+格式: **字段名: 字段值** 的结构（冒号后必须跟一个空格）。
 首部字段是**键值对**，按功能分为通用首部（请求 / 响应通用）、请求首部（仅请求用）、实体首部（描述消息体）三类，核心字段如下：
 - 通用首部：
 Connection：声明连接模式，keep-alive 表示复用当前连接（减少连接建立开销），close 表示请求完成后关闭连接，示例：Connection: keep-alive。
@@ -120,16 +122,16 @@ Connection：声明连接模式，keep-alive 表示复用当前连接（减少�
 - 表单数据：格式为 username=admin&password=123，对应 Content-Type: application/x-www-form-urlencoded。
 - JSON 数据：格式为 {"username":"admin","password":"123"}，对应 Content-Type: application/json。
 - 文件流：二进制数据（如图片、文档），对应 Content-Type: multipart/form-data（上传文件时常用）。
-### 4. 完整请求报文示例（POST 请求）
+### 4. 完整请求报文示例
 ```
 GET /562f25980001b1b106000338.jpg HTTP/1.1
-Host:img.mukewang.com
-User-Agent:Mozilla/5.0 (Windows NT 10.0; WOW64)
+Host: img.mukewang.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64)
 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36
-Accept:image/webp,image/*,*/*;q=0.8
-Referer:http://www.imooc.com/
-Accept-Encoding:gzip, deflate, sdch
-Accept-Language:zh-CN,zh;q=0.8
+Accept: image/webp,image/*,*/*;q=0.8
+Referer: http://www.imooc.com/
+Accept-Encoding: gzip, deflate, sdch
+Accept-Language: zh-CN,zh;q=0.8
 空行
 请求数据为空
 ```
@@ -203,7 +205,7 @@ Cache-Control: max-age=3600  # 通用首部：缓存1小时
 - 命令行工具：执行 curl -v [URL]（-v 表示 “详细模式”），会输出完整的请求和响应报文。
 - 抓包工具：Wireshark（底层抓包，可查看 TCP/IP + HTTP 完整报文）、Fiddler（代理抓包，适合接口调试，可修改报文内容）。
 
-## 相关函数
+## 字串相关函数
 ### 1. 字符串比较函数
 ```c
 #include <string.h>
@@ -248,3 +250,4 @@ size_t strspn(const char *s, const char *accept);
 size_t strcspn(const char *s, const char *reject);
 ```
 这两个函数用于计算字符串中连续包含或排除指定字符集的初始段长度。它们分别返回字符串中第一个不在 accept 字符集中的字符的位置或第一个在 reject 字符集中的字符的位置。
+

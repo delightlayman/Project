@@ -126,8 +126,10 @@ void threadpool<T>::run()
         m_queuelocker.unlock();
         if (!request)
             continue;
+        // reactor
         if (1 == m_actor_model)
         {
+            // 读取
             if (0 == request->m_state)
             {
                 if (request->read_once())
@@ -155,6 +157,7 @@ void threadpool<T>::run()
                 }
             }
         }
+        // proactor
         else
         {
             connectionRAII mysqlcon(&request->mysql, m_connPool);

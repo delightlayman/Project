@@ -159,6 +159,8 @@ public:
 private:
     int m_sockfd;
     sockaddr_in m_address;
+    // 网站根目录，文件夹内存放请求的资源和跳转的html文件
+    char *doc_root;
 
     // 存储读取的请求报文数据
     char m_read_buf[READ_BUFFER_SIZE];
@@ -171,7 +173,7 @@ private:
 
     // 存储发出的响应报文数据
     char m_write_buf[WRITE_BUFFER_SIZE];
-    // 指示buffer中的长度
+    // m_write_buf现有数据长度
     int m_write_idx;
 
     // 主状态机状态
@@ -182,29 +184,29 @@ private:
     // 以下为解析请求报文中对应的6个变量
     // 存储读取文件的名称
     char m_real_file[FILENAME_LEN];
-    char *m_url; //仅标识资源路径，而非完整的url格式
+    char *m_url; // 仅标识资源路径，而非完整的url格式
     char *m_version;
     char *m_host;
     long m_content_length;
     bool m_linger; // 是否保持连接 linger:留存
 
-    // 读取服务器上的文件地址
+    // 读取服务器上的文件地址---mmap映射
     char *m_file_address;
+    // 文件信息
     struct stat m_file_stat;
     // io向量机制iovec
     struct iovec m_iv[2];
     int m_iv_count;
     // 是否启用的POST
     int cgi;
-    // 存储请求头数据
-    char *m_string;
+    // 存储用户名和密码
+    char *m_userinfo;
+
     // 剩余发送字节数
     int bytes_to_send;
     // 已发送字节数
     int bytes_have_send;
 
-    char *doc_root;
-    
     // 是否启用ET模式
     int m_TRIGMode;
     // 是否关闭日志

@@ -1,6 +1,6 @@
-CFLAGS?=	-Wall -Wno-unused-parameter -ggdb -W -O
+CFLAGS?=	-Wall -Wno-unused-parameter -ggdb -W -O -I/usr/include/tirpc
 CC?=		gcc
-LIBS?=
+LIBS?= -lm -ltirpc
 LDFLAGS?=
 PREFIX?=	/usr/local
 VERSION=1.5

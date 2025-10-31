@@ -50,7 +50,7 @@ public:
     char *m_root;
     int m_log_write;
     int m_close_log;
-    int m_actormodel;
+    int m_actormodel; // 1==reactor，0==proactor
 
     int m_pipefd[2];
     int m_epollfd;

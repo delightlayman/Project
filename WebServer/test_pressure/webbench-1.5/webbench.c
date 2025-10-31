@@ -18,7 +18,9 @@
 #include "socket.c"
 #include <unistd.h>
 #include <sys/param.h>
-#include <rpc/types.h>
+#include <tirpc/rpc/types.h>
+#include <tirpc/rpc/xdr.h>
+#include <tirpc/rpc/auth.h>
 #include <getopt.h>
 #include <strings.h>
 #include <time.h>
@@ -40,7 +42,7 @@ int http10=1; /* 0 - http/0.9, 1 - http/1.0, 2 - http/1.1 */
 int method=METHOD_GET;
 int clients=1;
 int force=0;
-int force_reload=0;
+int force_reload=0; 
 int proxyport=80;
 char *proxyhost=NULL;
 int benchtime=30;

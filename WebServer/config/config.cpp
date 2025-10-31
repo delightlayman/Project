@@ -31,7 +31,7 @@ Config::Config(){
     //并发模型,默认是proactor
     actor_model = 0;
 }
-
+// ./server [-p port] [-l LOGWrite] [-m TRIGMode] [-o OPT_LINGER] [-s sql_num] [-t thread_num] [-c close_log] [-a actor_model]
 void Config::parse_arg(int argc, char*argv[]){
     int opt;
     const char *str = "p:l:m:o:s:t:c:a:";
