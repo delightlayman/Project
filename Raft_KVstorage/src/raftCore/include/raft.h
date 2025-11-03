@@ -53,8 +53,8 @@ class Raft : public raftRpcProctoc::raftRpc {
   std::shared_ptr<LockQueue<ApplyMsg>> applyChan;  // client从这里取日志（2B），client与raft通信的接口
 
   // 上一次 “重置选举超时” 的时间点
-  // leader不参与选举
   // 重置条件：follower收到leader的AppendEntry RPC（日志同步或心跳）
+  // 作用：判定是否需要重置选举超时定时器---electionTimeOutTicker()内部是否continue所在while循环
   std::chrono::_V2::system_clock::time_point m_lastResetElectionTime;
   // 上一次 “重置心跳超时” 的时间点---用于leader
   std::chrono::_V2::system_clock::time_point m_lastResetHearBeatTime;
@@ -81,7 +81,7 @@ class Raft : public raftRpcProctoc::raftRpc {
 
   // 选举超时定时器（此函数）
   // 每隔一段时间检查睡眠时间内有没有重置选举超时定时器
-  // 没有则说明选举超时了
+  // 没有则说明选举超时,发起选举
   // 有则设置合适睡眠时间：睡眠到重置时间+超时时间
   void electionTimeOutTicker();  // 选举超时检测与触发选举
 
