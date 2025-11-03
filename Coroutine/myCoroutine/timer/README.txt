@@ -17,7 +17,7 @@ chrono 提供了三种时钟类型，用于获取当前时间：
     steady_clock：稳定时钟，时间不会回退（适合测量时间间隔）
     high_resolution_clock：高精度时钟（通常是 steady_clock 或 system_clock 的别名）
 2.时间点（time_Point）
-时间点模板参数：时钟类型，时间间隔类型，默认时钟类型的间隔类型
+时间点模板参数：时钟类型，时间间隔类型（默认时钟类型的间隔类型）
     template<class Clock, class Duration = typename Clock::duration>
     class time_point;
 时间点表示一个具体的时间点，chrono 提供了 time_point 类型表示时间点：
