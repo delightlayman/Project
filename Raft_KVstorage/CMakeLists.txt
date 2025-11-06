@@ -30,7 +30,7 @@ include_directories(${PROJECT_SOURCE_DIR}/src/skipList/include)
 
 # 设置项目库文件搜索路径 -L
 link_directories(${PROJECT_SOURCE_DIR}/lib)
-link_directories(/root/module/build/release-install-cpp11/lib)
+link_directories(/usr/local/lib/muduo)
 
 # src包含了所有的相关代码
 add_subdirectory(src)

@@ -59,7 +59,7 @@ namespace myCoroutine
         is_inited = true;
 
 // assignment -> sleep_f = (sleep_fun)dlsym(RTLD_NEXT, "sleep");
-// dlsym : fetch the original symbols/function
+// dlsym : fetch the original symbols/function 并强转为sleep_fun类型
 // XX宏定义
 // name_f系列函数指针，指向对应的原始函数
 #define XX(name) name##_f = (name##_fun)dlsym(RTLD_NEXT, #name);

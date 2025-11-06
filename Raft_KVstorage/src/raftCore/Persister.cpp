@@ -1,10 +1,6 @@
-//
-// Created by swx on 23-5-30.
-//
 #include "Persister.h"
 #include "util.h"
 
-// todo:会涉及反复打开文件的操作，没有考虑如果文件出现问题会怎么办？？
 void Persister::Save(const std::string raftstate, const std::string snapshot) {
   std::lock_guard<std::mutex> lg(m_mtx);
   clearRaftStateAndSnapshot();
@@ -63,9 +59,7 @@ Persister::Persister(const int me)
     : m_raftStateFileName("raftstatePersist" + std::to_string(me) + ".txt"),
       m_snapshotFileName("snapshotPersist" + std::to_string(me) + ".txt"),
       m_raftStateSize(0) {
-  /**
-   * 检查文件状态并清空文件
-   */
+  // 检查文件状态并清空文件
   bool fileOpenFlag = true;
   std::fstream file(m_raftStateFileName, std::ios::out | std::ios::trunc);
   if (file.is_open()) {
@@ -82,9 +76,7 @@ Persister::Persister(const int me)
   if (!fileOpenFlag) {
     DPrintf("[func-Persister::Persister] file open error");
   }
-  /**
-   * 绑定流
-   */
+  // 绑定流
   m_raftStateOutStream.open(m_raftStateFileName);
   m_snapshotOutStream.open(m_snapshotFileName);
 }

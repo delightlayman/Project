@@ -1,7 +1,4 @@
-//
-// Created by swx on 23-6-4.
-//
-
+// clerk相当于一个客户端，用于向raft集群发送命令并接受响应
 #ifndef SKIP_LIST_ON_RAFT_CLERK_H
 #define SKIP_LIST_ON_RAFT_CLERK_H
 #include <arpa/inet.h>
@@ -31,10 +28,9 @@ class Clerk {
   void PutAppend(std::string key, std::string value, std::string op);
 
  public:
-  //对外暴露的三个功能和初始化
-  void Init(std::string configFileName);
-  std::string Get(std::string key);
 
+ void Init(std::string configFileName);
+  std::string Get(std::string key);
   void Put(std::string key, std::string value);
   void Append(std::string key, std::string value);
 

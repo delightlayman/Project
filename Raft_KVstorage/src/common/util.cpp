@@ -8,7 +8,7 @@
 void myAssert(bool condition, std::string message) {
   if (!condition) {
     std::cerr << "Error: " << message << std::endl;
-    std::exit(EXIT_FAILURE);
+    std::exit(EXIT_FAILURE);//退出进程
   }
 }
 

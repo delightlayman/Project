@@ -1,84 +1,92 @@
 syntax = "proto3";
 
+//命名空间
+package raftRpcProctoc; 
 
-package raftRpcProctoc; //所在的命名空间
+// 设为true表示：.proto 文件中定义的 service 生成通用的服务基类和客户端存根（stub）代码
+option cc_generic_services = true;
 
-option cc_generic_services = true;  //开启stub服务
-
-// 日志实体
+// 日志实体:指令，任期，索引
 message LogEntry{
-    bytes Command  =1;
+    bytes Command   =1;
 	int32 LogTerm   =2;
-	int32 LogIndex  = 3;
+	int32 LogIndex  =3;
 }
-// AppendEntriesArgs 由leader复制log条目，也可以当做是心跳连接，注释中的rf为leader节点
+// AppendEntries RPC 的请求参数（由 Leader 发送给 Follower）
+// 作用：1. 复制日志条目到 Follower；2. 作为心跳包维持 Leader 地位（当 Entries 为空时）
 message AppendEntriesArgs  {
-	//	下面几个参数和论文中相同
-	int32 Term        =1;
-	int32 LeaderId       =2;
-	int32 PrevLogIndex =3;
-	int32 PrevLogTerm  =4;
-	repeated LogEntry Entries  = 5;
-	int32 LeaderCommit  = 6;
+	int32 Term         = 1;       	// Leader 的当前任期号（供 Follower 检查 Leader 有效性）
+	int32 LeaderId     = 2; 		// Leader 节点的 ID（供 Follower 识别并回复）
+	int32 PrevLogIndex = 3;  		// Leader 发送的最后一条日志的前一条日志索引（用于日志一致性检查）
+	int32 PrevLogTerm  = 4;  		// PrevLogIndex 对应的日志任期（用于日志一致性检查）
+	repeated LogEntry Entries = 5;  // 要复制给 Follower 的日志条目列表（为空时即为心跳）
+	int32 LeaderCommit  = 6;  		// Leader 已提交的日志索引（供 Follower 同步提交状态）
 }
 
-// AppendEntriesReply 论文中没有提及返回要设置哪些状态
+// AppendEntries RPC 的响应结果（由 Follower 回复给 Leader）
 message AppendEntriesReply {
-	int32 Term =1;             // leader的term可能是与Follower不同的，
-	bool Success      =2;
-	int32 UpdateNextIndex = 3;               //快速调整leader对应的nextIndex
-	int32 AppState        =4; // 用来标识节点（网络）状态
+	int32 Term     = 1;  		// Follower 的当前任期号（若大于 Leader 的 Term，Leader 需更新自身为 Follower）
+	bool Success   = 2;  		// 日志复制是否成功（true 表示 PrevLog 匹配且 Entries 已正确追加）
+	int32 UpdateNextIndex = 3;  // 用于 Leader 快速调整对当前 Follower 的 nextIndex（优化日志同步效率）
+	int32 AppState        = 4;  // 标识 Follower 节点状态或网络状态（如是否存活、是否正常处理等）
 }
 
+// RequestVote RPC 的请求参数（由 Candidate 发送给其他节点，用于竞选 Leader）
 message RequestVoteArgs  {
-	int32 Term         =1;
-	int32 CandidateId  =2;
-	int32 LastLogIndex =3;
-	int32 LastLogTerm  =4;
+	int32 Term         = 1;  // Candidate 的当前任期号（发起竞选的任期）
+	int32 CandidateId  = 2;  // 候选节点的 ID（请求其他节点为该 ID 投票）
+	int32 LastLogIndex = 3;  // Candidate 最后一条日志的索引（用于投票者判断日志完整性）
+	int32 LastLogTerm  = 4;  // Candidate 最后一条日志的任期（用于投票者判断日志完整性）
 }
 
-// RequestVoteReply
-// example RequestVote RPC reply structure.
-// field names must start with capital letters!
+// RequestVote RPC 的响应结果（由投票节点回复给 Candidate）
 message RequestVoteReply  {
-	// Your data here (2A).
-	int32 Term        =1;
-	bool VoteGranted  =2;
-	int32 VoteState   =3;
+	int32 Term        = 1;  // 投票节点的当前任期号（若大于 Candidate 的 Term，Candidate 需更新自身任期）
+	bool VoteGranted  = 2;  // 是否授予选票（true 表示同意为该 Candidate 投票）
+	int32 VoteState   = 3;  // 投票状态（如已投给其他节点、自身为 Leader 等附加信息）
 }
 
-
+// InstallSnapshot RPC 的请求参数（由 Leader 发送给 Follower，用于同步快照数据）
+// 当 Follower 日志与 Leader 差距过大时，Leader 发送快照而非逐条日志，优化同步效率
 message InstallSnapshotRequest  {
-	int32 LeaderId                 =1;
-	int32 Term                     =2;
-	int32 LastSnapShotIncludeIndex =3;
-	int32 LastSnapShotIncludeTerm  =4;
-	bytes Data                     =5;//快照信息，当然是用bytes来传递
+	int32 LeaderId                 = 1;  // Leader 节点的 ID
+	int32 Term                     = 2;  // Leader 的当前任期号
+	int32 LastSnapShotIncludeIndex = 3;  // 快照中包含的最后一条日志的索引
+	int32 LastSnapShotIncludeTerm  = 4;  // 快照中包含的最后一条日志的任期
+	bytes Data                     = 5;  // 快照的具体数据（二进制形式，包含节点状态等信息）
 }
 
-// InstallSnapshotResponse 只用返回Term，因为对于快照只要Term是符合的就是无条件接受的
+// InstallSnapshot RPC 的响应结果（由 Follower 回复给 Leader）
 message InstallSnapshotResponse  {
-	int32 Term  = 1;
+	int32 Term  = 1;	// Follower 的当前任期号（供 Leader 检查自身有效性）
 }
-//只有raft节点之间才会涉及rpc通信
+
+// Raft 节点间的 RPC 服务定义（所有 Raft 节点需实现该服务，用于节点间通信）
 service raftRpc  
 {
+	// 日志复制/心跳 RPC：Leader -> Follower
     rpc AppendEntries(AppendEntriesArgs) returns(AppendEntriesReply);
+
+	// 快照同步 RPC：Leader -> Follower（日志差距过大时使用）
     rpc InstallSnapshot (InstallSnapshotRequest) returns (InstallSnapshotResponse);
+	
+	// 投票请求 RPC：Candidate -> 其他节点（竞选 Leader 时使用）
     rpc RequestVote (RequestVoteArgs) returns (RequestVoteReply);
 }
+
+
 // message ResultCode
 // {
 //     int32 errcode = 1;
 //     bytes errmsg = 2;
 // }
 
-// message GetFriendsListRequest  //请求，响应
+// message GetFriendsListRequest  //请求
 // {
 //     uint32 userid = 1;
 // }
 
-// message GetFriendsListResponse  //请求，响应
+// message GetFriendsListResponse  //响应
 // {
 //     ResultCode result = 1;
 //     repeated bytes friends = 2;

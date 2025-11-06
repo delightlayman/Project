@@ -1,9 +1,8 @@
 syntax = "proto3";
 
-
 package raftKVRpcProctoc; //所在的命名空间
 
-option cc_generic_services = true;  //开启stub服务
+option cc_generic_services = true; 
 
 // 日志实体
 message GetArgs{
@@ -14,10 +13,8 @@ message GetArgs{
 
 
 message GetReply  {
-  //	下面几个参数和论文中相同
   bytes Err = 1;
   bytes Value = 2;
-
 }
 
 
@@ -48,6 +45,7 @@ service kvServerRpc
   rpc PutAppend(PutAppendArgs) returns(PutAppendReply);
   rpc Get (GetArgs) returns (GetReply);
 }
+
 // message ResultCode
 // {
 //     int32 errcode = 1;

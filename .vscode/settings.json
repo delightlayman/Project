@@ -81,5 +81,6 @@
         "timer": "cpp",
         "auth.h": "c",
         "regex": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "/home/yxa/Project/Raft_KVstorage/src/skipList"
 }
